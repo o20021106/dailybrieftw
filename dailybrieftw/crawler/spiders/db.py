@@ -8,7 +8,11 @@ def hash_url(url):
 
 
 def get_db_connection():
-    return mysql.connector.connect(user=os.environ['DB_USER'],
+    db_socket_dir = os.environ.get('DB_SOCKET_DIR', '/cloudsql')
+    cloud_sql_connection_name = os.environ['CLOUD_SQL_CONNECTION_NAME']
+    unix_socket = '{}/{}'.format(db_socket_dir, cloud_sql_connection_name)
+    return mysql.connector.connect(unix_socket=unix_socket,
+                                   user=os.environ['DB_USER'],
                                    password=os.environ['DB_PWD'],
                                    database=os.environ['DB_NAME'])
 
