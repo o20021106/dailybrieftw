@@ -1,2 +1,3 @@
-Flask==1.1.2
+Flask==1.1.2cat 
+mysql-connector-python==8.0.22
 scrapy==2.4.1
