@@ -13,5 +13,4 @@ RUN python3.7 -m pip install -r requirements.txt
 RUN python3.7 -m pip install .
 RUN python3.7 -m pip freeze
 WORKDIR /app/server
-ENV DB_USER=DB_USER_PLACEHOLDER,DB_PWD=DB_PWD_PLACEHOLDER,DB_NAME=DB_NAME_PLACEHOLDER
 CMD python3.7 app.py
