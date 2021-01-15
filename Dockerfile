@@ -1,8 +1,8 @@
 FROM ubuntu:18.04
 RUN apt-get update \
-  && apt install software-properties-common \
+  && apt install -y software-properties-common \
   && add-apt-repository --yes ppa:deadsnakes/ppa \
-  && apt install python3.7 \
+  && apt install -y python3.7 \
   && apt-get install -y python3-pip python3-dev \
   && cd /usr/local/bin \
   && ln -s /usr/bin/python3 python \
