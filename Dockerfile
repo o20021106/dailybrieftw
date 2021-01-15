@@ -8,6 +8,7 @@ RUN apt-get update \
 COPY . /app
 WORKDIR /app
 RUN pip3 install -r requirements.txt
+RUN pip3 install .
 WORKDIR /app/server
 ENV DB_USER=DB_USER_PLACEHOLDER,DB_PWD=DB_PWD_PLACEHOLDER,DB_NAME=DB_NAME_PLACEHOLDER
 CMD python3 app.py
