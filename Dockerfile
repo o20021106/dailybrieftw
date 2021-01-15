@@ -3,9 +3,8 @@ RUN apt-get update \
   && apt install -y software-properties-common \
   && add-apt-repository --yes ppa:deadsnakes/ppa \
   && apt install -y python3.7 \
-  && apt-get install -y python3-pip python3-dev \
-  && python3.7 get-pip.py \
-  && apt-get install python3.7-dev
+  && apt install -y python3-pip \
+  && apt-get -y install python3.7-dev
 
 COPY . /app
 WORKDIR /app
