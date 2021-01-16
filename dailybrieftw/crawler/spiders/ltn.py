@@ -31,6 +31,7 @@ class LtnSpider(scrapy.Spider):
 
     def parse_page(self, response):
         url = response.xpath('//link[@rel="canonical"]/@href').get()
+        url = url if url is not None else response.request.url
         title = response.xpath('//meta[@property="og:title"]/@content').get()
         title = title.split(' - ')[0]
         content = response.xpath('//div[@class="text boxTitle boxText"]/p[not(@*)]/text()').getall()
@@ -38,5 +39,6 @@ class LtnSpider(scrapy.Spider):
             content[0] = re.sub('^〔.*〕', '',  content[0])
         content = '\n'.join(content)
         crawl_time = datetime.now()
-        publish_time = response.xpath('//meta[@property="article:published_time"]/@content').get().split('+')[0]
+        publish_time = response.xpath('//meta[@property="article:published_time"]/@content').get()
+        publish_time = publish_time.split('+')[0] if publish_time is not None else crawl_time
         push_to_db('articles', self.name, url, title, content, crawl_time, publish_time)
