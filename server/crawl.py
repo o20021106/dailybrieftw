@@ -16,13 +16,12 @@ spider_selector = {
 }
 
 def crawl_news():
-    if source in spider_selector:
-        process = CrawlerProcess(settings=spider_setting)
-        process.crawl(LtnSpider)
-        process.crawl(AppleDailySpider)
-        process.crawl(ChinaTimesSpider)
-        process.crawl(UdnSpider)
-        process.start()
+    process = CrawlerProcess(settings=spider_setting)
+    process.crawl(LtnSpider)
+    process.crawl(AppleDailySpider)
+    process.crawl(ChinaTimesSpider)
+    process.crawl(UdnSpider)
+    process.start()
 
 
 if __name__ == '__main__':
