@@ -12,7 +12,8 @@ class AppleDailySpider(scrapy.Spider):
     roll_back = 15
 
     def start_requests(self):
-        url_template = 'https://tw.appledaily.com/pf/api/v3/content/fetch/query-feed?query={"feedOffset":%d,"feedQuery":"type:story","feedSize":"%d","sort":"display_date:desc"}&_website=tw-appledaily&filter={content_elements{type,_id,canonical_url,headlines{basic},source{source_id,system,name,source_type}}'
+        # url_template = 'https://tw.appledaily.com/pf/api/v3/content/fetch/query-feed?query={"feedOffset":%d,"feedQuery":"type:story","feedSize":"%d","sort":"display_date:desc"}&_website=tw-appledaily&filter={content_elements{type,_id,canonical_url,headlines{basic},source{source_id,system,name,source_type}}'
+        url_templat= '''https://tw.appledaily.com/pf/api/v3/content/fetch/query-feed?query={"feedOffset":%d,"feedQuery":"taxonomy.primary_section._id:\"/realtime/politics\"+AND+type:story+AND+display_date:[now-200h/h+TO+now]+AND+NOT+taxonomy.tags.text.raw:_no_show_for_web+AND+NOT+taxonomy.tags.text.raw:_nohkad","feedSize":%d,"sort":"display_date:desc"}&_website=tw-appledaily&filter={content_elements{type,_id,canonical_url,headlines{basic},source{source_id,system,name,source_type}}'''
         for i in range(self.roll_back):
             url = url_template % (i * self.feed_size, self.feed_size)
             yield scrapy.Request(url=url, callback=self.parse)

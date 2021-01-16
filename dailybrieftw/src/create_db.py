@@ -8,14 +8,14 @@ def get_db_connection(**config):
 
 
 def create_db(db_name):
-    cnx = get_db_connection(host=os.environ['host'], user=os.environ['DB_USER'],
+    cnx = get_db_connection(host=os.environ['DB_HOST'], user=os.environ['DB_USER'],
                             password=os.environ['DB_PWD'])
     cursor = cnx.cursor()
     cursor.execute(f'CREATE DATABASE {db_name}')
 
 
 def create_table(db_name, table_name):
-    cnx = get_db_connection(host=os.environ['host'],
+    cnx = get_db_connection(host=os.environ['DB_HOST'],
                             user=os.environ['DB_USER'],
                             password=os.environ['DB_PWD'],
                             database=db_name)
