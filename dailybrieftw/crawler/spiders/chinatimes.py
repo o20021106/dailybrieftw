@@ -33,5 +33,5 @@ class ChinaTimesSpider(scrapy.Spider):
         content = response.xpath('//div[@class="article-body"]/p[not(@*)]/text()').getall()
         content = '\n'.join(content)
         crawl_time = datetime.now()
-        publish_time = response.xpath('//meta[@property="article:published_time"]/@content').get()
+        publish_time = response.xpath('//meta[@property="article:published_time"]/@content').get().split('+')[0]
         push_to_db('articles', self.name, url, title, content, crawl_time, publish_time)
