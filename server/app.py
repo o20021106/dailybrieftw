@@ -4,11 +4,9 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-@app.route("/crawl", methods=['POST'])
+@app.route("/crawl", methods=['GET'])
 def crawl():
-    data = request.get_json(force=True)
-    source = data['source']
-    process = subprocess.Popen(['python3.7', 'crawl.py', '--source', source], stdout=subprocess.PIPE)
+    process = subprocess.Popen(['python3.7', 'crawl.py'], stdout=subprocess.PIPE)
     stdout = process.communicate()[0]
     return 'done'
 

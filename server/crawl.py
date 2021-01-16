@@ -15,15 +15,15 @@ spider_selector = {
     'udn': UdnSpider
 }
 
-def crawl_news(source):
+def crawl_news():
     if source in spider_selector:
         process = CrawlerProcess(settings=spider_setting)
-        process.crawl(spider_selector[source])
+        process.crawl(LtnSpider)
+        process.crawl(AppleDailySpider)
+        process.crawl(ChinaTimesSpider)
+        process.crawl(UdnSpider)
         process.start()
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--source', type=str)
-    args = parser.parse_args()
-    crawl_news(args.source)
+    crawl_news()
