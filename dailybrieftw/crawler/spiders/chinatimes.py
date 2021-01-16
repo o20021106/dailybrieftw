@@ -5,7 +5,7 @@ import scrapy
 from .db import url_exists, push_to_db
 
 
-CRAWL_PAGES = 15
+CRAWL_PAGES = 11
 
 
 class ChinaTimesSpider(scrapy.Spider):

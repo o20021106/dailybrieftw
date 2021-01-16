@@ -6,21 +6,21 @@ import scrapy
 from .db import url_exists, push_to_db
 
 
-CRAWL_PAGES = 15
+CRAWL_PAGES = 25
 
 
 class LtnSpider(scrapy.Spider):
     name = "ltn"
 
     def start_requests(self):
-        url = 'https://news.ltn.com.tw/ajax/breakingnews/politics/'
+        url = 'https://news.ltn.com.tw/ajax/breakingnews/all/'
         for i in range(1, CRAWL_PAGES):
             yield scrapy.Request(url=url+str(i), callback=self.parse)
 
     def parse(self, response):
 
         json_response = response.json()
-        first_page = response.url == 'https://news.ltn.com.tw/ajax/breakingnews/politics/1'
+        first_page = response.url == 'https://news.ltn.com.tw/ajax/breakingnews/all/1'
         urls = [news['url'] for news in json_response['data']] if first_page \
             else [news['url'] for news in json_response['data'].values()]
         for url in urls:

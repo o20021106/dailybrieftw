@@ -9,7 +9,7 @@ from .db import url_exists, push_to_db
 class AppleDailySpider(scrapy.Spider):
     name = "appledaily"
     feed_size = 100
-    roll_back = 15
+    roll_back = 9
 
     def start_requests(self):
         url_template = 'https://tw.appledaily.com/pf/api/v3/content/fetch/query-feed?query={"feedOffset":%d,"feedQuery":"type:story","feedSize":"%d","sort":"display_date:desc"}&_website=tw-appledaily&filter={content_elements{type,_id,canonical_url,headlines{basic},source{source_id,system,name,source_type}}'
