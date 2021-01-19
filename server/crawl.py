@@ -18,9 +18,9 @@ spider_selector = {
 def crawl_news():
     process = CrawlerProcess(settings=spider_setting)
     process.crawl(LtnSpider)
-    process.crawl(AppleDailySpider)
-    process.crawl(ChinaTimesSpider)
-    process.crawl(UdnSpider)
+    #process.crawl(AppleDailySpider)
+    #process.crawl(ChinaTimesSpider)
+    #process.crawl(UdnSpider)
     process.start()
 
 

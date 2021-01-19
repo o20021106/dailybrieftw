@@ -4,7 +4,9 @@ from datetime import datetime
 
 import scrapy
 
-from .db import url_exists, push_to_db
+from dailybrieftw.utils.database_ops import url_exists, push_article_to_db
+from dailybrieftw.utils.utils import clean, clean_title
+
 
 class AppleDailySpider(scrapy.Spider):
     name = "appledaily"
@@ -23,9 +25,10 @@ class AppleDailySpider(scrapy.Spider):
         for element in json_response['content_elements']:
             if '_id' not in element:
                 continue
-            canonical_url = response.urljoin(element['canonical_url'])
+            url = response.urljoin(element['canonical_url'])
             api_url = article_api_template % element['_id']
-            if url_exists(canonical_url, 'articles'):
+            if url_exists(url):
+                self.log(f'[IGNORE] {url}')
                 continue
             yield scrapy.Request(url=api_url, callback=self.parse_page)
     
@@ -34,10 +37,19 @@ class AppleDailySpider(scrapy.Spider):
 
         url = response.urljoin(json_response['canonical_url'])
         title = json_response['headlines']['basic']
+        title = '' if title is None else clean_title(title)
+
         content = [element['content']for element in json_response['content_elements']
                    if element['type']=='text']
-        content = '\n'.join(content)
+        content = [clean(text.replace('\n', ' ')) for text in content]
+        content = '\n'.join([text for text in content if len(text) > 0])
         crawl_time = datetime.now()
-        publish_time = json_response['publish_date']
-        publish_time = datetime.strptime(publish_time[:19], '%Y-%m-%dT%H:%M:%S')
-        push_to_db('articles', self.name, url, title, content, crawl_time, publish_time)
+        try:
+            publish_time = json_response['publish_date']
+            publish_time = datetime.strptime(publish_time[:19], '%Y-%m-%dT%H:%M:%S')
+        except KeyError:
+            publish_time = crawl_time
+        try:
+            push_article_to_db(self.name, url, title, content, crawl_time, publish_time)
+        except:
+            self.log('error', url)
