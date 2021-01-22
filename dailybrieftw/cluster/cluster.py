@@ -8,7 +8,7 @@ from dailybrieftw.utils.utils import segment
 
 class Cluster():
     def __init__(self, eps=1, min_samples=1, segmenter_type='jieba'):
-        model_path = os.environ['tfidf_model_path']
+        model_path = 'dailybrieftw/cluster/models/vectorizer.pickle'
         self.vectorizer = pickle.load(open(model_path, 'rb'))
         self.dbscanner = DBSCAN(eps=eps, min_samples=min_samples)
 

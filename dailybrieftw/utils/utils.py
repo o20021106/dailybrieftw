@@ -3,7 +3,6 @@ import logging
 import re
 
 import jieba
-from ckiptagger import WS
 
 jieba.set_dictionary('dailybrieftw/utils/model_files/dict.txt.big')
 
