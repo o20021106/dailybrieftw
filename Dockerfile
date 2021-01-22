@@ -12,5 +12,5 @@ RUN python3.7 -m pip install --upgrade pip
 RUN python3.7 -m pip install -r requirements.txt
 RUN python3.7 -m pip install .
 RUN python3.7 -m pip freeze
-WORKDIR /app/server
+WORKDIR /app/
 CMD python3.7 wsgi.py
