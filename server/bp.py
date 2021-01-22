@@ -48,7 +48,41 @@ def scrape_with_crochet(spider):
     logger.info(f'[CRAWL] start crawing {spider.name}')
     eventual = crawl_runner.crawl(spider)
     return eventual
-    
+
+
+@bp.route('/cluster', methods=['GET'])
+def cluster():
+    logger.info(f'[CLUSTER] start clustering')
+    crawl_time = datetime.now() - timedelta(days=1)
+    crawl_time = datetime(crawl_time.year, crawl_time.month,
+                          crawl_time.day, crawl_time.hour)
+    articles = Article.query.with_entities(
+        Article.title, Article.content, Article.source).filter(Article.publish_time >= crawl_time).all()
+    texts = []
+    for title, content, _ in articles:
+        title = title if title else ''
+        content = content if content else ''
+        texts.append(title + ' ' + content)
+    labels = clusterer.get_clusters(texts)
+    label_counts = Counter(labels).most_common()
+    clusters = OrderedDict()
+    for label, _ in label_counts:
+        if label == -1:
+            continue
+        clusters[label] = []
+    for article, label in zip(articles, labels):
+        if label == -1:
+            continue
+        clusters[label].append(article)
+    for index, cluster in enumerate(clusters.values()):
+        if index >= 15:
+            break
+        title, content, source = cluster[0]
+        content = content.split('\n')[0]
+        content = content if len(content) <= 500 else content[:500]
+        push_cluster_to_db(crawl_time, 0, index, len(cluster), title, content, source)
+    return ('', 204)
+
 
 @bp.route('/', methods=['GET'])
 def hello():

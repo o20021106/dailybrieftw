@@ -35,3 +35,15 @@ def push_article_to_db(source, url, title, content, crawl_time, publish_time):
         except:
             logger.exception('[DATABASE][PUSH] failed.')
 
+
+def push_cluster_to_db(publish_time, cluster_num, cluster_id,
+                     cluster_size, title, content, source):
+    cluster = Cluster(publish_time=publish_time, cluster_num=cluster_num,
+                      cluster_id=cluster_id, cluster_size=cluster_size,
+                      title=title, content=content, source=source)
+    try:
+        db_session.add(cluster)
+        logger.info(f'[DATABSE][PUSH] {cluster} to database.')
+        db_session.commit()
+    except:
+        logger.exception('[DATABASE][PUSH] failed.')

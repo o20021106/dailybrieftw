@@ -5,18 +5,11 @@ import re
 import jieba
 from ckiptagger import WS
 
+jieba.set_dictionary('dailybrieftw/utils/model_files/dict.txt.big')
 
-class Segmenter:
-    def __init__(self, segmenter_type='jieba'):
-        self.segmenter_type = segmenter_type
-        if segmenter_type == 'ckiptagger':
-            model_dir = os.environ['ckiptagger_model_dir']
-            self.ws = WS(model_dir)
 
-    def segment(self, texts):
-        if self.segmenter_type == 'ckiptagger':
-            return [' '.join(text) for text in self.ws(texts)]
-        return [' '.join(jieba.cut(text)) for text in texts]
+def segment(texts):
+    return [' '.join(jieba.cut(text)) for text in texts]
         
 
 def setup_logger(log_file, logger_name=None, level=logging.DEBUG):
