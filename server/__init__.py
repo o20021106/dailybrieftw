@@ -1,7 +1,6 @@
 import os
 
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 
 from .bp import bp
 from dailybrieftw.utils.database import db_session, init_db
