@@ -8,9 +8,9 @@ RUN apt-get update \
 
 COPY . /app
 WORKDIR /app
+RUN mkdir tmp
 RUN python3.7 -m pip install --upgrade pip
 RUN python3.7 -m pip install -r requirements.txt
 RUN python3.7 -m pip install .
 RUN python3.7 -m pip freeze
-WORKDIR /app/
 CMD python3.7 wsgi.py
