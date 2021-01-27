@@ -96,5 +96,6 @@ class TTS():
 if __name__ == '__main__':
     input_text = '今天天氣晴朗ㄋ'
     file_path = './audio.wav'
-    mels, alignment_history, audios = do_synthesis(input_text, False)
+    tts = TTS()
+    mels, alignment_history, audios = tts.do_synthesis(input_text, False)
     sf.write(file_path, audios, 22050, "PCM_16")

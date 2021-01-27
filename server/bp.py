@@ -16,7 +16,7 @@ import numpy as np
 
 from dailybrieftw.cluster.cluster import Cluster
 from dailybrieftw.utils.models import Article
-from dailybrieftwl.utils.utils import upload_blob
+from dailybrieftw.utils.utils import upload_blob
 from dailybrieftw.crawler.spiders import LtnSpider, UdnSpider, AppleDailySpider, ChinaTimesSpider
 from dailybrieftw.utils.database_ops import push_cluster_to_db
 from dailybrieftw.tts.tts import TTS
@@ -114,7 +114,7 @@ def cluster_to_tts(cluster_content, audio_file_path):
     texts = cluster_to_text(cluster_content)
     audios = []
     for text in texts:
-        _, _, audio = tts.do_synthesis(xtext, simplified=False)
+        _, _, audio = tts.do_synthesis(text, simplified=False)
         audios.append(audio)
     audios = np.concatenate(audios)
     sf.write(audio_file_path, audios, 22050, 'PCM_16')
