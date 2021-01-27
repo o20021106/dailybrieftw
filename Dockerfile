@@ -14,6 +14,7 @@ WORKDIR /app
 RUN mkdir tmp
 RUN python3.7 -m pip install --upgrade pip
 RUN python3.7 -m pip install -r requirements.txt
+RUN pip install git+https://github.com/repodiac/german_transliterate
 RUN python3.7 -m pip install .
 RUN python3.7 -m pip freeze
 CMD python3.7 wsgi.py
