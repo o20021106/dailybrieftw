@@ -4,7 +4,8 @@ RUN apt-get update \
   && add-apt-repository --yes ppa:deadsnakes/ppa \
   && apt install -y python3.7 \
   && apt install -y python3-pip \
-  && apt-get -y install python3.7-dev
+  && apt-get -y install python3.7-dev \
+  && apt-get -y install libsndfile1
 
 COPY . /app
 WORKDIR /app
