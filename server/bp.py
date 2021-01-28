@@ -35,8 +35,6 @@ configure_logging(setting)
 source_mapping = {'ltn': '自由時報', 'appledaily': '蘋果日報',
                   'chinatimes': '中國時報', 'udn': '聯合報'}
 
-service_account_info = json.loads(os.environ['SERVICE_ACCOUNT_INFO'])
-
 logger = logging.getLogger()
 bp = Blueprint('endpoints', __name__)
 
