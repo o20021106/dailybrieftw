@@ -126,6 +126,5 @@ def generate_signed_url(bucket, blob_object):
 
     if hasattr(credentials, "service_account_email"):
         service_account_email = credentials.service_account_email
-    print(service_account_email)
     url = blob.generate_signed_url(expiration=expires,service_account_email=service_account_email, access_token=credentials.token)
     return url
