@@ -4,14 +4,15 @@ import os
 import logging
 
 import crochet
-from flask import Blueprint
+from flask import Blueprint, request, jsonify
+from flask_cors import cross_origin
 from scrapy.crawler import CrawlerRunner
 from scrapy.utils.log import configure_logging, DEFAULT_LOGGING
 import soundfile as sf
 import numpy as np
 
-from dailybrieftw.cluster.cluster import Cluster
-from dailybrieftw.utils.models import Article
+from dailybrieftw.cluster.cluster import Cluster as Clusterer
+from dailybrieftw.utils.models import Article, Cluster
 from dailybrieftw.utils.utils import upload_blob
 from dailybrieftw.crawler.spiders import (
     LtnSpider, UdnSpider,
@@ -21,7 +22,7 @@ from dailybrieftw.utils.database_ops import push_cluster_to_db
 from dailybrieftw.tts.tts import TTS
 
 crochet.setup()
-clusterer = Cluster()
+clusterer = Clusterer()
 tts = TTS()
 
 DEFAULT_LOGGING['loggers']['twisted']['level'] = 'DEBUG'
@@ -61,7 +62,7 @@ def cluster():
     logger.info(f'[CLUSTER] start clustering')
     crawl_time = datetime.now() - timedelta(days=1)
     crawl_time = datetime(crawl_time.year, crawl_time.month,
-                          crawl_time.day, crawl_time.hour)
+                          crawl_time.day)
     articles = Article.query.with_entities(
         Article.title, Article.content, Article.source).filter(
             Article.publish_time >= crawl_time).all()
@@ -119,6 +120,29 @@ def cluster_to_tts(cluster_content, audio_file_path):
     audios = np.concatenate(audios)
     sf.write(audio_file_path, audios, 22050, 'PCM_16')
     return
+
+
+@bp.route('/brief')
+@cross_origin()
+def brief():
+    date = request.args.get('date')
+    print(date)
+    if not date:
+        date = datetime.now()
+    try:
+        date = datetime.strptime(date, '%Y-%m-%d')
+    except ValueError:
+        logging.info('invalid date')
+        return jsonify({'error': 'invalid data'}), 400
+    articles = Cluster.query.with_entities(
+        Cluster.title, Cluster.content, Cluster.source, Cluster.cluster_num).filter(
+        Cluster.publish_time == date).all()
+    articles = sorted(articles, key=lambda x: x[3])
+    articles = [{
+        'title': title, 'content': content,
+        'source': source}
+        for title, content, source, _ in articles]
+    return jsonify({'articles': articles}), 200
 
 
 @bp.route('/', methods=['GET'])
