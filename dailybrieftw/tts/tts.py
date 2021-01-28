@@ -4,7 +4,6 @@ import zipfile
 
 import tensorflow as tf
 import soundfile as sf
-import yaml
 import opencc
 from tensorflow_tts.inference import AutoConfig
 from tensorflow_tts.inference import TFAutoModel
@@ -12,7 +11,7 @@ from tensorflow_tts.inference import AutoProcessor
 
 from dailybrieftw.utils.utils import download_blob
 
-    
+
 class TTS():
     def __init__(self):
         self.converter = opencc.OpenCC('tw2s.json')
@@ -46,9 +45,9 @@ class TTS():
         )
         self.processor = AutoProcessor.from_pretrained(pretrained_path=baker_mapper_file)
 
-    def do_synthesis(self, input_text, simplified=True):
-        input_text = self.preprocess(input_text, simplified)
-        input_ids = self.processor.text_to_sequence(input_text, inference=True)
+    def do_synthesis(self, text, simplified=True):
+        text = self.preprocess(text, simplified)
+        input_ids = self.processor.text_to_sequence(text, inference=True)
 
         _, mel_outputs, stop_token_prediction, alignment_history = self.text2mel_model.inference(
             tf.expand_dims(tf.convert_to_tensor(input_ids, dtype=tf.int32), 0),
@@ -78,7 +77,7 @@ class TTS():
         return text
 
     def remove_hash(self, text):
-        return re.sub(r'#', '', text)  
+        return re.sub(r'#', '', text) 
 
     def simplify(self, text):
         return self.converter.convert(text)
@@ -91,7 +90,7 @@ class TTS():
         text = self.replace_space(text)
         text = self.replace_punctuation(text)
         return text
-    
+
 
 if __name__ == '__main__':
     input_text = '今天天氣晴朗ㄋ'

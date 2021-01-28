@@ -1,13 +1,9 @@
-import subprocess
 from datetime import datetime, timedelta
 from collections import Counter, OrderedDict
-import time
 import os
 import logging
 
 import crochet
-crochet.setup()
-from flask import Flask, request, jsonify
 from flask import Blueprint
 from scrapy.crawler import CrawlerRunner
 from scrapy.utils.log import configure_logging, DEFAULT_LOGGING
@@ -17,11 +13,14 @@ import numpy as np
 from dailybrieftw.cluster.cluster import Cluster
 from dailybrieftw.utils.models import Article
 from dailybrieftw.utils.utils import upload_blob
-from dailybrieftw.crawler.spiders import LtnSpider, UdnSpider, AppleDailySpider, ChinaTimesSpider
+from dailybrieftw.crawler.spiders import (
+    LtnSpider, UdnSpider,
+    AppleDailySpider, ChinaTimesSpider
+)
 from dailybrieftw.utils.database_ops import push_cluster_to_db
 from dailybrieftw.tts.tts import TTS
 
-
+crochet.setup()
 clusterer = Cluster()
 tts = TTS()
 
@@ -64,19 +63,20 @@ def cluster():
     crawl_time = datetime(crawl_time.year, crawl_time.month,
                           crawl_time.day, crawl_time.hour)
     articles = Article.query.with_entities(
-        Article.title, Article.content, Article.source).filter(Article.publish_time >= crawl_time).all()
-    texts = []
-    for title, content, _ in articles:
+        Article.title, Article.content, Article.source).filter(
+            Article.publish_time >= crawl_time).all()
+    articles_ = []
+    for title, content, source in articles:
         title = title if title else ''
         content = content if content else ''
-        texts.append(title + ' ' + content)
-    labels = clusterer.get_clusters(texts)
+        source = source if source else ''
+        articles_.append((title, content, source))
+    articles = articles_
+    del articles_
+    labels = clusterer.get_clusters(
+        [title + ' ' + content for title, content, _ in articles])
     label_counts = Counter(labels).most_common()
-    clusters = OrderedDict()
-    for label, _ in label_counts:
-        if label == -1:
-            continue
-        clusters[label] = []
+    clusters = OrderedDict((label, []) for label, _ in label_counts if label != -1)
     for article, label in zip(articles, labels):
         if label == -1:
             continue
