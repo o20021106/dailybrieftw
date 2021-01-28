@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 from collections import Counter, OrderedDict
 import os
 import logging
+import json
 
 import crochet
 from flask import Blueprint, request, jsonify
@@ -13,7 +14,7 @@ import numpy as np
 
 from dailybrieftw.cluster.cluster import Cluster as Clusterer
 from dailybrieftw.utils.models import Article, Cluster
-from dailybrieftw.utils.utils import upload_blob
+from dailybrieftw.utils.utils import upload_blob, generate_signed_url
 from dailybrieftw.crawler.spiders import (
     LtnSpider, UdnSpider,
     AppleDailySpider, ChinaTimesSpider
@@ -31,9 +32,10 @@ setting = {'ROBOTSTXT_OBBEY': True,
            'LOG_ENABLED': True}
 crawl_runner = CrawlerRunner(setting)
 configure_logging(setting)
-
 source_mapping = {'ltn': '自由時報', 'appledaily': '蘋果日報',
                   'chinatimes': '中國時報', 'udn': '聯合報'}
+
+service_account_info = json.loads(os.environ['SERVICE_ACCOUNT_INFO'])
 
 logger = logging.getLogger()
 bp = Blueprint('endpoints', __name__)
@@ -126,7 +128,6 @@ def cluster_to_tts(cluster_content, audio_file_path):
 @cross_origin()
 def brief():
     date = request.args.get('date')
-    print(date)
     if not date:
         date = datetime.now()
     try:
@@ -142,7 +143,9 @@ def brief():
         'title': title, 'content': content,
         'source': source}
         for title, content, source, _ in articles]
-    return jsonify({'articles': articles}), 200
+    audio_prefix = f'{date.year}_{date.month}_{date.day}_0'
+    signed_url = generate_signed_url(service_account_info, 'dailybrief', f'audio/{audio_prefix}.wav')
+    return jsonify({'articles': articles, 'audio_url': signed_url}), 200
 
 
 @bp.route('/', methods=['GET'])
