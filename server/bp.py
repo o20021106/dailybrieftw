@@ -144,7 +144,7 @@ def brief():
         'source': source}
         for title, content, source, _ in articles]
     audio_prefix = f'{date.year}_{date.month}_{date.day}_0'
-    signed_url = generate_signed_url(service_account_info, 'dailybrief', f'audio/{audio_prefix}.wav')
+    signed_url = generate_signed_url('dailybrief', f'audio/{audio_prefix}.wav')
     return jsonify({'articles': articles, 'audio_url': signed_url}), 200
 
 
