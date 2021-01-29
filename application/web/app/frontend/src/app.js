@@ -68,14 +68,14 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <Container className={style.container}>
+        <Container className={style.container} fluid="md">
           <Row className="align-content-center">
             <Col>
               <h1 className={["text-center", style.title].join(" ")}>每日簡報</h1>
             </Col>
           </Row>
           <Row>
-            <Col className="align-self-center">
+            <Col className="align-self-center" sm={6}>
               <div>
                 <Datetime onChange={this.handleDate.bind(this)}
                   initialValue={new Date()}
@@ -85,7 +85,7 @@ class App extends React.Component {
                 />
               </div>
             </Col>
-            <Col className="align-self-center">
+            <Col className="align-self-center" sm={6}> 
               <div>
                 <ReactAudioPlayer
                   src={this.state.audio_url}
