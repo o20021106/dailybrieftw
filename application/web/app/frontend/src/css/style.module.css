@@ -1,0 +1,25 @@
+.article {
+    padding: 10px 0px 10px 0px;
+  }
+
+.container {
+    padding: 50px 0px 50px 0px;
+}
+
+.title {
+    padding: 0px 0px 30px 0px; 
+}
+
+.audio_player::-webkit-media-controls-panel
+{
+  background-color:#cccccc;
+}
+
+.footer{
+  background-color:#cccccc;
+}
+
+.icon{
+  display: inline-block;
+  padding: 0px 10px 0px 10px
+}
