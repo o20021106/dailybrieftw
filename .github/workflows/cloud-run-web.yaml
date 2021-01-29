@@ -1,0 +1,37 @@
+name: publish
+
+on: workflow_dispatch
+
+jobs:
+  build:
+    name: Cloud Run Deployment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Setup GCP Service Account
+        uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+        with:
+          version: 'latest'
+          service_account_email: ${{ secrets.GCP_SA_EMAIL }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+
+      - name: Configure Docker
+        run: |
+          gcloud auth configure-docker
+      - name: Build
+        working-directory: ./application/web
+        run: |
+          docker build -t asia.gcr.io/${{ secrets.GCP_PROJECT_ID }}/dailybrieftwweb:latest .
+      - name: Push
+        run: |
+          docker push asia.gcr.io/${{ secrets.GCP_PROJECT_ID }}/dailybrieftwweb:latest
+      - name: Deploy
+        run: |
+          gcloud run deploy dailybrieftwweb \
+          --region asia-east1 \
+          --image asia.gcr.io/${{ secrets.GCP_PROJECT_ID }}/dailybrieftwweb \
+          --platform managed \
+          --allow-unauthenticated \
+          --project ${{ secrets.GCP_PROJECT_ID }}
