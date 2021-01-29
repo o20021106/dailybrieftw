@@ -7,7 +7,7 @@ RUN apt-get update \
   && apt-get -y install python3.7-dev
 
 COPY . /app
-WORKDIR /app/application/web/app
+WORKDIR /app
 RUN python3.7 -m pip install --upgrade pip
 RUN python3.7 -m pip install -r requirements.txt
 RUN python3.7 -m pip freeze
