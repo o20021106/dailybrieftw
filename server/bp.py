@@ -23,8 +23,8 @@ from dailybrieftw.utils.database_ops import push_cluster_to_db
 from dailybrieftw.tts.tts import TTS
 
 crochet.setup()
-clusterer = Clusterer()
-tts = TTS()
+clusterer = None
+tts = None
 
 DEFAULT_LOGGING['loggers']['twisted']['level'] = 'DEBUG'
 setting = {'ROBOTSTXT_OBBEY': True,
@@ -59,6 +59,9 @@ def scrape_with_crochet(spider):
 
 @bp.route('/cluster', methods=['GET'])
 def cluster():
+    global clusterer
+    if clusterer is None:
+        clusterer = Clusterer()
     logger.info(f'[CLUSTER] start clustering')
     crawl_time = datetime.now() - timedelta(days=1)
     crawl_time = datetime(crawl_time.year, crawl_time.month,
@@ -112,6 +115,9 @@ def cluster_to_text(cluster_content):
 
 
 def cluster_to_tts(cluster_content, audio_file_path):
+    global tts
+    if tts is None:
+        tts = TTS()
     texts = cluster_to_text(cluster_content)
     audios = []
     for text in texts:
