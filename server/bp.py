@@ -82,18 +82,20 @@ def cluster():
     label_counts = Counter(labels).most_common()
     clusters = OrderedDict((label, []) for label, _ in label_counts if label != -1)
     for article, label in zip(articles, labels):
-        if label == -1:
-            continue
-        clusters[label].append(article)
+        if label != -1:
+            clusters[label].append(article)
     final_cluster_result = []
-    for index, cluster in enumerate(clusters.values()):
-        if index >= 15:
-            break
-        title, content, source = cluster[0]
+    for cluster in clusters.values():
+        for title, content, source in cluster:
+            if content > 50:
+                break
+        if len(content) < 50:
+            continue
         content = content.split('\n')[0]
         content = content if len(content) <= 500 else content[:500]
         final_cluster_result.append((title, content, source))
-        push_cluster_to_db(crawl_time, 0, index, len(cluster), title, content, source)
+        push_cluster_to_db(crawl_time, 0, len(final_cluster_result),
+                           len(cluster), title, content, source)
     cluster_to_tts(final_cluster_result, './tmp/audio.wav')
     audio_prefix = f'{crawl_time.year}_{crawl_time.month}_{crawl_time.day}_0'
     upload_blob('dailybrief', './tmp/audio.wav', f'audio/{audio_prefix}.wav')
