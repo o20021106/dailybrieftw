@@ -51,12 +51,12 @@ class App extends React.Component {
       date = now_date
     }
 
-    if (date == now_date && now.getHours() <= 15){
+    if (date == now_date && now.getHours() < 8){
       this.setState({
         ...this.state,
         showAlert: true,
         alertMessage: "今天的簡報要到早上八點才會送出，請聽取其他日期簡報。"})
-      console.log('show alert')
+      console.log('show alert', now.getHours())
     }
     else {
       this.setState({
