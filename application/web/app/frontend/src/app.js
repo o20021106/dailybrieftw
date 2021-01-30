@@ -41,7 +41,7 @@ class App extends React.Component {
   }
 
   fetchArticles(date = "") {
-    var url = "https://dailybrieftw-jkrsedbirq-de.a.run.app//brief"
+    var url = "/brief"
     var now = new Date()
     var year = now.getFullYear();
     var month = (now.getMonth()+1);
