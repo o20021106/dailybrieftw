@@ -122,9 +122,12 @@ def generate_signed_url(bucket, blob_object):
     client = storage.Client()
     bucket = client.get_bucket(bucket)
     blob = bucket.get_blob(blob_object)
+    if blob is None:
+        return None
     expires = datetime.datetime.now() + datetime.timedelta(seconds=86400)
 
     if hasattr(credentials, "service_account_email"):
         service_account_email = credentials.service_account_email
+    service_account_email = 'dailybrieftw@dailybrieftw-302512.iam.gserviceaccount.com'
     url = blob.generate_signed_url(expiration=expires,service_account_email=service_account_email, access_token=credentials.token)
     return url
