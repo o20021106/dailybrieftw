@@ -70,12 +70,12 @@ class App extends React.Component {
     return (
       <div className={style.container}>
         <Container className={style.content} fluid="md">
-          <Row className="align-content-center">
+          <Row className="align-content-center" style={{margin: "auto"}}>
             <Col>
               <h1 className={["text-center", style.title].join(" ")}>每日簡報</h1>
             </Col>
           </Row>
-          <Row>
+          <Row style={{margin: "auto"}}>
             <Col className="d-flex justify-content-center align-self-center" sm={6}>
               <div  className={style.gadget}>
                 <Datetime onChange={this.handleDate.bind(this)}
