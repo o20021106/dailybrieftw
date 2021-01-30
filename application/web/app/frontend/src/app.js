@@ -8,6 +8,7 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Navbar from 'react-bootstrap/Navbar';
+import Alert from 'react-bootstrap/Alert';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGithub } from '@fortawesome/free-brands-svg-icons'
 import { faEnvelope} from '@fortawesome/free-solid-svg-icons';
@@ -23,7 +24,12 @@ class App extends React.Component {
     this.state = {
       articles: [],
       audio_url: "",
+      showAlert: false,
+      alertMessage: ""
     };
+    this.fetchArticles = this.fetchArticles.bind(this);
+    this.handelFetchedData = this.handelFetchedData.bind(this);
+    this.handleDate = this.handleDate.bind(this);
   }
 
   handelFetchedData(data) {
@@ -36,20 +42,32 @@ class App extends React.Component {
 
   fetchArticles(date = "") {
     var url = "https://dailybrieftw-jkrsedbirq-de.a.run.app//brief"
-    
+    var now = new Date()
+    var year = now.getFullYear();
+    var month = (now.getMonth()+1);
+    var day = now.getDate();
+    var now_date = year + '-' + (month<=9 ? '0' + month : month) + '-' + (day <= 9 ? '0' + day : day);
     if (date==""){
-      var targetDate = new Date();
-      targetDate.setDate(targetDate.getDate() - 1);
-
-      var year = targetDate.getFullYear();
-      var month = (targetDate.getMonth()+1);
-      var day =  targetDate.getDate();
-      date = year + '-' + (month<=9 ? '0' + month : month) + '-' + (day <= 9 ? '0' + day : day);
+      date = now_date
     }
-    url = url + "?date=" + date
-    fetch(url, {mode: 'cors'})
-    .then(response => response.json())
-    .then(this.handelFetchedData.bind(this));
+
+    if (date == now_date && now.getHours() <= 15){
+      this.setState({
+        ...this.state,
+        showAlert: true,
+        alertMessage: "今天的簡報要到早上八點才會送出，請聽取其他日期簡報。"})
+      console.log('show alert')
+    }
+    else {
+      this.setState({
+        ...this.state,
+        showAlert: false,
+        alertMessage: ""})
+      url = url + "?date=" + date
+      fetch(url, {mode: 'cors'})
+      .then(response => response.json())
+      .then(this.handelFetchedData);
+    }
   }
 
   handleDate(date) {
@@ -67,6 +85,17 @@ class App extends React.Component {
   }
 
   render() {
+    const alertStyle = {
+      visibility: this.state.showAlert ? "visible" : "hidden",
+      display: this.state.showAlert ? "block" : "none",
+      margin: "auto"
+    };
+    const articlesStyle = {
+      visibility: this.state.showAlert ? "hidden" : "visible",
+      display: this.state.showAlert ? "none" : "block",
+      margin: "auto",
+      padding: "10px 0px 30px 0px"
+    };
     return (
       <div className={style.container}>
         <Container className={style.content} fluid="md">
@@ -77,8 +106,8 @@ class App extends React.Component {
           </Row>
           <Row style={{margin: "auto"}}>
             <Col className="d-flex justify-content-center align-self-center" sm={6}>
-              <div  className={style.gadget}>
-                <Datetime onChange={this.handleDate.bind(this)}
+              <div className={style.gadget}>
+                <Datetime onChange={this.handleDate}
                   initialValue={new Date()}
                   isValidDate={this.isValidDate}
                   dateFormat="YYYY-MM-DD"
@@ -96,7 +125,12 @@ class App extends React.Component {
               </div>
             </Col>
           </Row>
-          <div><Articles articles={this.state.articles}/></div>
+          <Row style={alertStyle} >
+              <Alert variant="secondary">{this.state.alertMessage}</Alert>
+          </Row>
+          <Row style={articlesStyle}>
+                <Articles articles={this.state.articles}/>
+          </Row>
         </Container>
         <Navbar bg="dark" variant="dark" fixed="bottom" className={style.footer_container}>
           <div className={style.footer}>
