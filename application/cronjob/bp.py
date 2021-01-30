@@ -86,6 +86,8 @@ def cluster():
             clusters[label].append(article)
     final_cluster_result = []
     for cluster in clusters.values():
+        if len(final_cluster_result) >= 15:
+            breaks
         for title, content, source in cluster:
             if len(content) > 50:
                 break
