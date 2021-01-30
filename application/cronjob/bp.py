@@ -87,7 +87,7 @@ def cluster():
     final_cluster_result = []
     for cluster in clusters.values():
         for title, content, source in cluster:
-            if content > 50:
+            if len(content) > 50:
                 break
         if len(content) < 50:
             continue
