@@ -2,12 +2,22 @@
     padding: 10px 0px 10px 0px;
   }
 
-.container {
+
+.content {
     padding: 50px 0px 50px 0px;
 }
 
+.container {
+  position: relative;
+  min-height: 100%;
+}
+
+.gadget {
+  padding: 10px 0px 10px 0px;
+}
+
 .title {
-    padding: 0px 0px 30px 0px; 
+  padding: 0px 0px 30px 0px; 
 }
 
 .audio_player::-webkit-media-controls-panel
@@ -16,7 +26,14 @@
 }
 
 .footer{
-  background-color:#cccccc;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.footer_container{
+  position: absolute;
+  bottom: 0px;
 }
 
 .icon{

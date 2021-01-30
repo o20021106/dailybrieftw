@@ -7,6 +7,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Navbar from 'react-bootstrap/Navbar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGithub } from '@fortawesome/free-brands-svg-icons'
 import { faEnvelope} from '@fortawesome/free-solid-svg-icons';
@@ -67,16 +68,16 @@ class App extends React.Component {
 
   render() {
     return (
-      <div>
-        <Container className={style.container} fluid="md">
+      <div className={style.container}>
+        <Container className={style.content} fluid="md">
           <Row className="align-content-center">
             <Col>
               <h1 className={["text-center", style.title].join(" ")}>每日簡報</h1>
             </Col>
           </Row>
           <Row>
-            <Col className="align-self-center" sm={6}>
-              <div>
+            <Col className="d-flex justify-content-center align-self-center" sm={6}>
+              <div  className={style.gadget}>
                 <Datetime onChange={this.handleDate.bind(this)}
                   initialValue={new Date()}
                   isValidDate={this.isValidDate}
@@ -85,8 +86,8 @@ class App extends React.Component {
                 />
               </div>
             </Col>
-            <Col className="align-self-center" sm={6}> 
-              <div>
+            <Col className="d-flex justify-content-center align-self-center" sm={6}> 
+              <div className={style.gadget}>
                 <ReactAudioPlayer
                   src={this.state.audio_url}
                   controls
@@ -97,16 +98,17 @@ class App extends React.Component {
           </Row>
           <div><Articles articles={this.state.articles}/></div>
         </Container>
-        <footer className={style.footer}>
-          <div className="text-center p-3">
-          <a className={["text-dark", style.icon].join(" ")} href="https://github.com/o20021106/dailybrieftw">
-            <FontAwesomeIcon icon={faGithub} size="lg" />
-          </a>
-          <a className={["text-dark", style.icon].join(" ")} href="mailto: o20021106@gmail.com">
-            <FontAwesomeIcon icon={faEnvelope} size="lg" />
-          </a>
-        </div>
-        </footer>
+        <Navbar bg="dark" variant="dark" fixed="bottom" className={style.footer_container}>
+          <div className={style.footer}>
+              <a className={["text-light", style.icon].join(" ")} href="https://github.com/o20021106/dailybrieftw">
+                <FontAwesomeIcon icon={faGithub} size="lg" />
+              </a>
+              <a className={["text-light", style.icon].join(" ")} href="mailto: o20021106@gmail.com">
+                <FontAwesomeIcon icon={faEnvelope} size="lg" />
+              </a>
+          </div>
+        </Navbar>
+
       </div>
     );
   }
