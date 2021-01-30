@@ -63,9 +63,9 @@ def cluster():
     if clusterer is None:
         clusterer = Clusterer()
     logger.info(f'[CLUSTER] start clustering')
-    crawl_time = datetime.now() - timedelta(days=1)
-    crawl_time = datetime(crawl_time.year, crawl_time.month,
-                          crawl_time.day)
+    now = datetime.now()
+    now = datetime(now.year, now.month, now.day)
+    crawl_time = now - timedelta(days=1)
     articles = Article.query.with_entities(
         Article.title, Article.content, Article.source).filter(
             Article.publish_time >= crawl_time).all()
@@ -89,17 +89,17 @@ def cluster():
         if len(final_cluster_result) >= 15:
             break
         for title, content, source in cluster:
+            content = content.split('\n')[0]
             if len(content) > 50:
                 break
         if len(content) < 50:
             continue
-        content = content.split('\n')[0]
         content = content if len(content) <= 500 else content[:500]
         final_cluster_result.append((title, content, source))
-        push_cluster_to_db(crawl_time, 0, len(final_cluster_result),
+        push_cluster_to_db(now, 0, len(final_cluster_result),
                            len(cluster), title, content, source)
     cluster_to_tts(final_cluster_result, './tmp/audio.wav')
-    audio_prefix = f'{crawl_time.year}_{crawl_time.month}_{crawl_time.day}_0'
+    audio_prefix = f'{now.year}_{now.month}_{now.day}_0'
     upload_blob('dailybrief', './tmp/audio.wav', f'audio/{audio_prefix}.wav')
     os.remove('./tmp/audio.wav')
     return ('', 204)
