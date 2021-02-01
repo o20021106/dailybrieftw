@@ -13,6 +13,7 @@ from google.oauth2 import service_account
 import six
 from six.moves.urllib.parse import quote
 import google.auth
+import pytz
 
 
 jieba.set_dictionary('dailybrieftw/utils/model_files/dict.txt.big')
@@ -20,7 +21,13 @@ jieba.set_dictionary('dailybrieftw/utils/model_files/dict.txt.big')
 
 def segment(texts):
     return [' '.join(jieba.cut(text)) for text in texts]
-        
+
+
+def get_current_local_time():
+    now = datetime.datetime.now().replace(tzinfo=pytz.timezone('UTC'))
+    now = now.astimezone(tz=pytz.timezone('Asia/Taipei'))
+    return now
+
 
 def setup_logger(log_file, logger_name=None, level=logging.DEBUG):
     if logger_name is not None:

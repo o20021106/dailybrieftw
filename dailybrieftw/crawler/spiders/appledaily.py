@@ -5,7 +5,7 @@ from datetime import datetime
 import scrapy
 
 from dailybrieftw.utils.database_ops import url_exists, push_article_to_db
-from dailybrieftw.utils.utils import clean, clean_title
+from dailybrieftw.utils.utils import clean, clean_title, get_current_local_time
 
 
 class AppleDailySpider(scrapy.Spider):
@@ -43,7 +43,7 @@ class AppleDailySpider(scrapy.Spider):
                    if element['type']=='text']
         content = [clean(text.replace('\n', ' ')) for text in content]
         content = '\n'.join([text for text in content if len(text) > 0])
-        crawl_time = datetime.now()
+        crawl_time = get_current_local_time()
         try:
             publish_time = json_response['publish_date']
             publish_time = datetime.strptime(publish_time[:19], '%Y-%m-%dT%H:%M:%S')
