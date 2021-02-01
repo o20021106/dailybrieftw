@@ -11,6 +11,7 @@ from scrapy.crawler import CrawlerRunner
 from scrapy.utils.log import configure_logging, DEFAULT_LOGGING
 import soundfile as sf
 import numpy as np
+import pytz
 
 from dailybrieftw.cluster.cluster import Cluster as Clusterer
 from dailybrieftw.utils.models import Article, Cluster
@@ -63,8 +64,11 @@ def cluster():
     if clusterer is None:
         clusterer = Clusterer()
     logger.info(f'[CLUSTER] start clustering')
-    now = datetime.now()
+    now = datetime.now().replace(tzinfo=pytz.timezone('UTC'))
+    logger.debug(f'[Cluster] current time {now}')
+    now = now.astimezone(tz=pytz.timezone('Asia/Taipei'))
     now = datetime(now.year, now.month, now.day)
+    logger.info(f'[Cluster] local time {now}')
     crawl_time = now - timedelta(days=1)
     articles = Article.query.with_entities(
         Article.title, Article.content, Article.source).filter(
@@ -130,32 +134,3 @@ def cluster_to_tts(cluster_content, audio_file_path):
     audios = np.concatenate(audios)
     sf.write(audio_file_path, audios, 22050, 'PCM_16')
     return
-
-
-@bp.route('/brief')
-@cross_origin()
-def brief():
-    date = request.args.get('date')
-    if not date:
-        date = datetime.now()
-    try:
-        date = datetime.strptime(date, '%Y-%m-%d')
-    except ValueError:
-        logging.info('invalid date')
-        return jsonify({'error': 'invalid data'}), 400
-    articles = Cluster.query.with_entities(
-        Cluster.title, Cluster.content, Cluster.source, Cluster.cluster_num).filter(
-        Cluster.publish_time == date).all()
-    articles = sorted(articles, key=lambda x: x[3])
-    articles = [{
-        'title': title, 'content': content,
-        'source': source}
-        for title, content, source, _ in articles]
-    audio_prefix = f'{date.year}_{date.month}_{date.day}_0'
-    signed_url = generate_signed_url('dailybrief', f'audio/{audio_prefix}.wav')
-    return jsonify({'articles': articles, 'audio_url': signed_url}), 200
-
-
-@bp.route('/', methods=['GET'])
-def hello():
-    return 'Hello world.'
