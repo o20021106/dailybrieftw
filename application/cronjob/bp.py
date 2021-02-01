@@ -103,7 +103,7 @@ def cluster():
         push_cluster_to_db(now, 0, len(final_cluster_result),
                            len(cluster), title, content, source)
     cluster_to_tts(final_cluster_result, './tmp/audio.wav')
-    audio_prefix = f'{now.year}_{now.month}_{now.day}_0'
+    audio_prefix = now.strftime('%Y_%m_%d_0')
     upload_blob('dailybrief', './tmp/audio.wav', f'audio/{audio_prefix}.wav')
     os.remove('./tmp/audio.wav')
     return ('', 204)
