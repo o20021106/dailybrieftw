@@ -1,3 +1,5 @@
+import os
+
 from google.cloud import storage
 import datetime
 import google.auth
@@ -8,7 +10,8 @@ def generate_signed_url(bucket, blob_object):
     # Perform a refresh request to get the access token of the current credentials (Else, it's None)
     from google.auth.transport import requests
     r = requests.Request()
-    credentials.refresh(r)
+    if 'GOOGLE_APPLICATION_CREDENTIALS' not in os.environ:
+        credentials.refresh(r)
 
     client = storage.Client()
     bucket = client.get_bucket(bucket)
