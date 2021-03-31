@@ -26,6 +26,7 @@ def brief():
     date = request.args.get('date')
     if not date:
         date = datetime.now()
+        date = date.strftime("%Y-%m-%d")
     try:
         date = datetime.strptime(date, '%Y-%m-%d')
     except ValueError:
