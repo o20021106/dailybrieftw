@@ -3,6 +3,7 @@ This project is inspired by my own habit of listening to news briefing podcasts 
 
 This repo uses scrapy to crawl four major Taiwanese paper (蘋果日報、聯合報、自由時報、中國時報) daily. Then cluster algorithm are applied to group similar news together to determine which news are more important than others. The heuristic is to choose larger groups as daily brief items since they are likely to reflect events that are covered by most media outlet. I also utilize [TensorflowTTS](https://github.com/TensorSpeech/TensorFlowTTS) to generate audio file corresponding to above mention news briefs.
 
+Checkout [Website](https://dailybrieftwweb-jkrsedbirq-de.a.run.app/) for demo.
 
 ## Architecture
 I choose GCP to host my service. The artchitecture is as below.
